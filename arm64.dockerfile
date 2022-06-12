@@ -49,6 +49,6 @@ RUN /root/sources/install.sh install_code_analysis_tools
 RUN /root/sources/install.sh install_clean
 
 RUN rm -rf /root/sources
-
+RUN updatedb
 WORKDIR /data
 #CMD ["/bin/zsh"]

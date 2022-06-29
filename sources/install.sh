@@ -279,7 +279,7 @@ function Bolt() {
 
 function install_crackmapexec() {
   colorecho "Installing CrackMapExec"
-  apt -y install libssl-dev libffi-dev python2-dev build-essential python3-winrm python3-venv
+  apt -y install libffi-dev libxml2-dev libxslt-dev libssl-dev openssl autoconf g++ python3-dev libkrb5-dev
   git -C /opt/tools/ clone --recursive https://github.com/byt3bl33d3r/CrackMapExec
   cd /opt/tools/CrackMapExec
   # Redefining baseDN from domain name instead of KDC
@@ -288,7 +288,7 @@ function install_crackmapexec() {
   mkdir -p ~/.cme
   cp -v /root/sources/crackmapexec/cme.conf ~/.cme/cme.conf
   # this is for having the ability to check the source code when working with modules and so on
-  #git -C /opt/tools/ clone https://github.com/byt3bl33d3r/CrackMapExec
+#  git -C /opt/tools/ clone https://github.com/byt3bl33d3r/CrackMapExec
 #  apt -y install crackmapexec
   cp -v /root/sources/grc/conf.cme /usr/share/grc/conf.cme
 }
@@ -336,7 +336,7 @@ function install_impacket() {
   # prs="1090 1135 1154 1171 1177 1184 1201 1202 1224 1253 1256 1267 1270 1280 1288 1289 1290 1291 1323"
   prs="1135 1154 1171 1177 1184 1201 1202 1224 1253 1256 1267 1270 1280 1288 1289 1290 1291 1323"
   for pr in $prs; do git fetch origin pull/$pr/head:pull/$pr && git merge --strategy-option theirs --no-edit pull/$pr; done
-  python3 -m pip install .
+  python3 -m pipx install .
   cp -v /root/sources/grc/conf.ntlmrelayx /usr/share/grc/conf.ntlmrelayx
   cp -v /root/sources/grc/conf.secretsdump /usr/share/grc/conf.secretsdump
   cp -v /root/sources/grc/conf.getgpppassword /usr/share/grc/conf.getgpppassword
@@ -854,7 +854,7 @@ function install_proxmark3() {
 
 function checksec_py() {
   colorecho "Installing checksec.py"
-  python3 -m pip install checksec.py
+  python3 -m pipx install checksec.py
 }
 
 function arsenal() {
@@ -865,7 +865,7 @@ function arsenal() {
 }
 
 function bloodhound_v4() {
-  echo "Installing BloodHound from sources"
+  colorecho "Installing BloodHound from sources"
   git -C /opt/tools/ clone https://github.com/BloodHoundAD/BloodHound/
   mv /opt/tools/BloodHound /opt/tools/BloodHound4
   zsh -c "source ~/.zshrc && cd /opt/tools/BloodHound4 && nvm install 16.13.0 && nvm use 16.13.0 && npm install -g electron-packager && npm install && npm run build:linux"
@@ -885,7 +885,7 @@ function bloodhound_v4() {
 }
 
 function bloodhound_old_v3() {
-  echo "Installing Bloodhound v3 (just-in-case)"
+  colorecho "Installing Bloodhound v3 (just-in-case)"
   fapt libxss1
   wget -P /tmp/ "https://github.com/BloodHoundAD/BloodHound/releases/download/3.0.5/BloodHound-linux-x64.zip"
   unzip /tmp/BloodHound-linux-x64.zip -d /opt/tools/
@@ -894,7 +894,7 @@ function bloodhound_old_v3() {
 }
 
 function bloodhound_old_v2() {
-  echo "Installing BloodHound v2 (for older databases/collections)"
+  colorecho "Installing BloodHound v2 (for older databases/collections)"
   wget -P /tmp/ https://github.com/BloodHoundAD/BloodHound/releases/download/2.2.1/BloodHound-linux-x64.zip
   unzip /tmp/BloodHound-linux-x64.zip -d /opt/tools/
   mv /opt/tools/BloodHound-linux-x64 /opt/tools/BloodHound2
@@ -999,7 +999,6 @@ function ghunt() {
   git -C /opt/tools/ clone https://github.com/mxrch/GHunt
   cd /opt/tools/GHunt
   python3 -m pip install -r requirements.txt
-  python3 download_chromedriver.py
 }
 
 function oaburl_py() {
@@ -1697,8 +1696,7 @@ function install_robotstester() {
   # https://github.com/p0dalirius/robotstester
   colorecho "Installing Robotstester"
   git -C /opt/tools/ clone https://github.com/p0dalirius/robotstester.git
-  cd /opt/tools/robotstester
-  python3 setup.py install
+  python3 -m pipx install /opt/tools/robotstester
 }
 
 function install_finduncommonshares() {
@@ -2031,6 +2029,7 @@ function install_base() {
   fapt tree
   fapt faketime
   fapt ruby ruby-dev
+  fapt libxml2-utils
 }
 
 # Package dedicated to most used offensive tools
@@ -2066,6 +2065,7 @@ function install_most_used_tools() {
   install_responder                       # LLMNR, NBT-NS and MDNS poisoner
   install_crackmapexec            # Network scanner
   install_impacket                        # Network protocols scripts
+  enum4linux-ng
   fapt smbclient                  # Small dynamic library that allows iOS apps to access SMB/CIFS file servers
   install_smbmap                     # Allows users to enumerate samba share drives across an entire domain
   install_nuclei                  # Vulnerability scanner
@@ -2305,8 +2305,6 @@ function install_ad_tools() {
   amber                           # AV evasion
   powershell                      # Windows Powershell for Linux
   krbrelayx                       # Kerberos unconstrained delegation abuse toolkit
-  rbcd-attack                     # Kerberos Resource-Based Constrained Delegation Attack
-  rbcd-permissions                # Kerberos Resource-Based Constrained Delegation Attack
   evilwinrm                       # WinRM shell
   pypykatz                        # Mimikatz implementation in pure Python
   enyx                            # Hosts discovery
@@ -2317,7 +2315,6 @@ function install_ad_tools() {
   windapsearch-go                 # Active Directory Domain enumeration through LDAP queries
   oaburl_py                       # Send request to the MS Exchange Autodiscover service
   LNKUp
-  mimikatz                        # AD vulnerability exploiter
   fapt samdump2                   # Dumps Windows 2k/NT/XP/Vista password hashes
   fapt smbclient                  # Small dynamic library that allows iOS apps to access SMB/CIFS file servers
   install_smbmap                  # Allows users to enumerate samba share drives across an entire domain
@@ -2332,7 +2329,6 @@ function install_ad_tools() {
   install_gosecretsdump           # secretsdump in Go for heavy files
   install_adidnsdump              # enumerate DNS records in Domain or Forest DNS zones
   install_powermad                # MachineAccountQuota and DNS exploit tools
-  install_snaffler                # Shares enumeration and looting
   install_pygpoabuse              # TODO : comment this
   install_bloodhound-import       # Python script to import BH data to a neo4j db
   install_bloodhound-quickwin     # Python script to find quickwins from BH data in a neo4j db
@@ -2358,6 +2354,7 @@ function install_ad_tools() {
   install_ldaprelayscan
   install_goldencopy
   install_crackhound
+  python3 -m pip install --upgrade rich # temporary fix. Rich seems to be installed with a deprecated version. I need to find which tool requires this
 }
 
 # Package dedicated to mobile apps pentest tools

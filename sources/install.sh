@@ -424,8 +424,18 @@ function install_empire() {
   colorecho "Applying Exegol specific patch"
   git apply /root/sources/patches/empire_install_sh_patch.diff
   ./setup/install.sh
+  python3 -m pip install .
   # Changing password
   sed -i 's/password123/exegol4thewin/' /opt/tools/Empire/empire/server/config.yaml
+}
+
+function install_starkiller() {
+  colorecho "Installing Starkiller"
+  apt -y install libfuse2
+  version=$(curl -s https://github.com/BC-SECURITY/Starkiller/tags|grep /releases/tag/v -m1 |grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+'|cut -d 'v' -f2)
+  mkdir /opt/tools/starkiller
+  wget -O /opt/tools/starkiller/starkiller.AppImage https://github.com/BC-SECURITY/Starkiller/releases/download/v$version/starkiller-$version.AppImage
+  chmod +x /opt/tools/starkiller/starkiller.AppImage
 }
 
 function Sn1per() {
@@ -864,6 +874,12 @@ function arsenal() {
   git -C /opt/tools/ clone https://github.com/Orange-Cyberdefense/arsenal
   cd /opt/tools/arsenal
   python3 -m pip install -r requirements.txt
+}
+
+function install_tldr() {
+  colorecho "Installing tldr"
+  apt-get install -y tldr
+  tldr -u
 }
 
 function bloodhound_v4() {
@@ -1551,6 +1567,16 @@ function install_petitpotam() {
   git -C /opt/tools/ clone https://github.com/topotam/PetitPotam
 }
 
+function install_DFSCoerce() {
+  colorecho "Installing DfsCoerce"
+  git -C /opt/tools/ clone https://github.com/Wh04m1001/DFSCoerce.git
+}
+
+function install_coercer() {
+  colorecho "Installing Coercer"
+  git -C /opt/tools/ clone https://github.com/p0dalirius/Coercer
+}
+
 function install_PKINITtools() {
   colorecho "Installing PKINITtools"
   git -C /opt/tools/ clone https://github.com/dirkjanm/PKINITtools
@@ -1969,6 +1995,7 @@ function install_base() {
   tmux                            # Tmux
   fapt zsh                        # Awesome shell
   install_ohmyzsh                         # Awesome shell
+  install_tldr                    # TL;DR man     
   fapt python-setuptools
   fapt python3-setuptools
   python3 -m pip install wheel
@@ -2265,11 +2292,11 @@ function install_web_tools() {
 # Package dedicated to command & control frameworks
 function install_c2_tools() {
   install_empire                  # Exploit framework
+  install_starkiller              # GUI for Empire
   install_metasploit              # Offensive framework
   install_routersploit            # Exploitation Framework for Embedded Devices
   install_pwncat                  # netcat and rlwrap on steroids to handle revshells, automates a few things too
   # TODO: add Silentrinity
-  # TODO: add starkiller
   # TODO: add beef-xss
 }
 
@@ -2340,6 +2367,8 @@ function install_ad_tools() {
   install_ldapsearch-ad           # Python script to find quickwins from basic ldap enum
   install_ntlm-scanner            # Python script to check public vulns on DCs
   install_petitpotam              # Python script to coerce auth through MS-EFSR abuse
+  install_DFSCoerce               # Python script to coerce auth through NetrDfsRemoveStdRoot and NetrDfsAddStdRoot abuse
+  install_coercer                 # Python script to coerce auth through multiple methods
   install_PKINITtools             # Python scripts to use kerberos PKINIT to obtain TGT
   install_pywhisker               # Python script to manipulate msDS-KeyCredentialLink
   install_manspider               # Snaffler-like in Python

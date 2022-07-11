@@ -47,6 +47,6 @@ RUN /root/sources/install.sh install_network_tools
 RUN /root/sources/install.sh install_clean
 
 RUN rm -rf /root/sources
-
+RUN updatedb
 WORKDIR /data
 #CMD ["/bin/zsh"]
